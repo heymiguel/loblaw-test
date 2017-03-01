@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
 import ProductList from './ProductList.js';
-
-
 class App extends Component {
   render() {
     return (
