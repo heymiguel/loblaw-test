@@ -7,6 +7,7 @@ class ProductList extends Component {
     super( props );
     this.initialFilter = this.initialFilter.bind( this );
     this.showMore = this.showMore.bind( this );
+    this.sortAlphabetically = this.sortAlphabetically.bind( this );
     this.state = {
       productList: [],
       displayList: [],
@@ -21,7 +22,7 @@ class ProductList extends Component {
     return (
       <div>  
         <div className="filters">
-            <button className="a-to-z">A to Z</button>
+            <button className="a-to-z" onClick={this.sortAlphabetically}>A to Z</button>
             <button className="by-price">by Price</button>
         </div>
         <section className="product-list">
@@ -43,6 +44,33 @@ class ProductList extends Component {
           </section>
       </div>
     );
+  }
+
+  //sort functions
+    //should always look at the latest version of the displayList
+    // performs data manipulation before triggering rerender
+    // simulates potential sorting on server side, depending on application
+  sortAlphabetically(arrayToSort){
+    let tempArray = this.state.displayList;
+    tempArray.sort((a,b)=>{
+      let aName = a.productName.toUpperCase();
+      let bName = b.productName.toUpperCase();
+      if (aName < bName){
+        return -1;
+      }
+      if (aName > bName){
+        return 1;
+      }
+      return 0;
+    });
+    this.setState({
+      displayList: tempArray
+    });
+    console.log(this.state.displayList);
+  }
+
+  sortByPrice(arrayToSort){
+
   }
 
   initialFilter( arrayToFilter ) {
@@ -70,7 +98,6 @@ class ProductList extends Component {
     });
   }
 
-  // do any data manipulations BEFORE sending to render. 
   // TODO:
   // send filtered array to render.
   // setup AZ and price filters.
