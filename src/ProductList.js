@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import Product from './Product.js'
 import axios from 'axios';
+import './ProductList.css';
 
 class ProductList extends Component {
-  constructor( props ) {
-    super( props );
-    this.initialFilter = this.initialFilter.bind( this );
-    this.showMore = this.showMore.bind( this );
-    this.sortAlphabetically = this.sortAlphabetically.bind( this );
-    this.sortByPrice = this.sortByPrice.bind( this );
+  constructor(props) {
+    super(props);
+    this.initialFilter = this.initialFilter.bind(this);
+    this.showMore = this.showMore.bind(this);
+    this.sortAlphabetically = this.sortAlphabetically.bind(this);
+    this.sortByPrice = this.sortByPrice.bind(this);
     this.state = {
       productList: [],
       displayList: [],
@@ -21,45 +22,41 @@ class ProductList extends Component {
   render() {
 
     return (
-      <div>  
+      <div className="container">
         <div className="filters">
-            <button className="a-to-z" onClick={this.sortAlphabetically}>A to Z</button>
-            <button className="by-price" onClick={this.sortByPrice}>by Price</button>
+          <p className="subtitle">
+            Sort by:
+          </p>
+          <button className="a-to-z button is-dark" onClick={ this.sortAlphabetically }>A to Z</button>
+          <button className="by-price button is-dark" onClick={ this.sortByPrice }>by Price</button>
         </div>
         <section className="product-list">
-            <ul>
-              {this.state.displayList.map(( product,index ) => {
+          <ul className="columns">
+            { this.state.displayList.map((product, index) => {
                 return (
-                  <Product
-                    key={index}
-                    name={product.productName}
-                    color={product.productColor}
-                    price={product.productPrice}
-                    badgeString={product.productBadgeString}
-                    thumbnail={product.thumbnails.b2}
-                  ></Product>
+                  <Product key={ index } name={ product.productName } color={ product.productColor } price={ product.productPrice } badgeString={ product.productBadgeString } thumbnail={ product.thumbnails.b2 }></Product>
                 )
-              })}
-            </ul>
-            <button className="show-more" onClick={this.showMore}> show more </button>
+              }) }
+          </ul>
+          <button className="show-more button is-info" onClick={ this.showMore }> show more </button>
         </section>
       </div>
-    );
+      );
   }
 
   //sort functions
-    //should always look at the latest version of the displayList
-    // performs data manipulation before triggering rerender
-    // simulates potential sorting on server side, depending on application
-  sortAlphabetically(){
+  //should always look at the latest version of the displayList
+  // performs data manipulation before triggering rerender
+  // simulates potential sorting on server side, depending on application
+  sortAlphabetically() {
     let tempArray = this.state.displayList;
-    tempArray.sort((a,b)=>{
+    tempArray.sort((a, b) => {
       let aName = a.productName.toUpperCase();
       let bName = b.productName.toUpperCase();
-      if (aName < bName){
+      if (aName < bName) {
         return -1;
       }
-      if (aName > bName){
+      if (aName > bName) {
         return 1;
       }
       return 0;
@@ -69,9 +66,9 @@ class ProductList extends Component {
     });
   }
 
-  sortByPrice(){
+  sortByPrice() {
     let tempArray = this.state.displayList;
-    tempArray.sort((a,b)=>{
+    tempArray.sort((a, b) => {
       return a.productPrice - b.productPrice;
     });
     this.setState({
@@ -79,15 +76,15 @@ class ProductList extends Component {
     })
   }
 
-  initialFilter( arrayToFilter ) {
-    let tempArray = arrayToFilter.slice( this.state.index.start, this.state.index.end );
+  initialFilter(arrayToFilter) {
+    let tempArray = arrayToFilter.slice(this.state.index.start, this.state.index.end);
     // initial display of 20.
-    this.setState( {
+    this.setState({
       displayList: tempArray
     });
   }
 
-  showMore(){
+  showMore() {
     let start = this.state.index.start;
     let end = this.state.index.end;
     let tempArray = this.state.displayList;
@@ -96,18 +93,11 @@ class ProductList extends Component {
     let newArray = tempArray.concat(this.state.productList.slice(start, end));
     this.setState({
       displayList: newArray,
-      index:{
+      index: {
         start: start,
         end: end
       }
     });
-  }
-
-  // TODO:
-  // send filtered array to render.
-  // setup AZ and price filters.
-  componentDidUpdate( prevProps, prevState ) {
-    window.scrollTo( 0, 100 )
   }
 
   componentDidMount() {
@@ -116,14 +106,14 @@ class ProductList extends Component {
     // axios also handles onload/ init() for data.
     // as per challenge ensures data is not stored locally
     // ensures data is most up to date version of data.
-    axios.get( 'https://joefresh-marketing-dev.s3.amazonaws.com/developer-interview/full-list.json' )
-      .then(( result ) => {
-        this.setState( {
+    axios.get('https://joefresh-marketing-dev.s3.amazonaws.com/developer-interview/full-list.json')
+      .then((result) => {
+        this.setState({
           productList: result.data.results
         });
       })
       .then(() => {
-        this.initialFilter( this.state.productList );
+        this.initialFilter(this.state.productList);
       });
   }
 
