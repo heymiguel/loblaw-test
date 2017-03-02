@@ -8,6 +8,7 @@ class ProductList extends Component {
     this.initialFilter = this.initialFilter.bind( this );
     this.showMore = this.showMore.bind( this );
     this.sortAlphabetically = this.sortAlphabetically.bind( this );
+    this.sortByPrice = this.sortByPrice.bind( this );
     this.state = {
       productList: [],
       displayList: [],
@@ -23,25 +24,25 @@ class ProductList extends Component {
       <div>  
         <div className="filters">
             <button className="a-to-z" onClick={this.sortAlphabetically}>A to Z</button>
-            <button className="by-price">by Price</button>
+            <button className="by-price" onClick={this.sortByPrice}>by Price</button>
         </div>
         <section className="product-list">
-          <ul>
-            {this.state.displayList.map(( product,index ) => {
-              return (
-                <Product
-                  key={index}
-                  name={product.productName}
-                  color={product.productColor}
-                  price={product.productPrice}
-                  badgeString={product.productBadgeString}
-                  thumbnail={product.thumbnails.b2}
-                ></Product>
-              )
-            })}
-          </ul>
-          <button className="show-more" onClick={this.showMore}> show more </button>
-          </section>
+            <ul>
+              {this.state.displayList.map(( product,index ) => {
+                return (
+                  <Product
+                    key={index}
+                    name={product.productName}
+                    color={product.productColor}
+                    price={product.productPrice}
+                    badgeString={product.productBadgeString}
+                    thumbnail={product.thumbnails.b2}
+                  ></Product>
+                )
+              })}
+            </ul>
+            <button className="show-more" onClick={this.showMore}> show more </button>
+        </section>
       </div>
     );
   }
@@ -50,7 +51,7 @@ class ProductList extends Component {
     //should always look at the latest version of the displayList
     // performs data manipulation before triggering rerender
     // simulates potential sorting on server side, depending on application
-  sortAlphabetically(arrayToSort){
+  sortAlphabetically(){
     let tempArray = this.state.displayList;
     tempArray.sort((a,b)=>{
       let aName = a.productName.toUpperCase();
@@ -66,17 +67,21 @@ class ProductList extends Component {
     this.setState({
       displayList: tempArray
     });
-    console.log(this.state.displayList);
   }
 
-  sortByPrice(arrayToSort){
-
+  sortByPrice(){
+    let tempArray = this.state.displayList;
+    tempArray.sort((a,b)=>{
+      return a.productPrice - b.productPrice;
+    });
+    this.setState({
+      displayList: tempArray
+    })
   }
 
   initialFilter( arrayToFilter ) {
     let tempArray = arrayToFilter.slice( this.state.index.start, this.state.index.end );
     // initial display of 20.
-    // also sets up the manipulation array separate from initial product list (maintaining immutability on original product list)
     this.setState( {
       displayList: tempArray
     });
