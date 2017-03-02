@@ -6,39 +6,48 @@ class ProductList extends Component {
   constructor( props ) {
     super( props );
     this.state = {
-      productList: []
+      productList: [],
+      displayList: []
     };
   }
   render() {
     return (
-      <div className="product-list">
+      <section className="product-list">
         <ul>
           {this.state.productList.map(( product ) => {
             return (
-              <li key={product.productId}>
-                <img src={product.thumbnails.b2} alt={product.productName}></img>
-                <p className="product-name">{product.productName}</p>
-                <p className="product-color">{product.productColor}</p>
-                <p className="product-price">${product.productPrice} CAD</p>
-                <p className="new-arrival">{product.productBadgeString}</p>
-              </li>
+              <Product
+                key={product.productId}
+                name={product.productName}
+                color={product.productColor}
+                price={product.productPrice}
+                badgeString={product.productBadgeString}
+                thumbnail={product.thumbnails.b2}
+                altText={product.productName}
+              ></Product>
             )
           })}
         </ul>
-      </div>
+        <div className="filters">
+          <button className="a-to-z">A to Z</button>
+          <button className="by-price">by Price</button>
+        </div>
+      </section>
     );
   }
 
   // do any data manipulations BEFORE sending to render. 
-  // pagination is going to be the big timesink.
   // TODO:
   // send filtered array to render.
   // setup AZ and price filters.
-
+  componentDidUpdate( prevProps, prevState ) {
+    window.scrollTo( 0, 500 )
+  }
 
   componentDidMount() {
     // data update happens after initial mount of component, as per Reactdocs.
-    // axios to simulate get request
+    // axios to manage get request
+    // as per challenge ensures data is not stored locally
     // ensures data is most up to date version of data.
     axios.get( 'https://joefresh-marketing-dev.s3.amazonaws.com/developer-interview/full-list.json' )
       .then(( result ) => {
