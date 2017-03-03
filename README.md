@@ -40,6 +40,8 @@ JS Framework used: `React`
 
 Library for API: `Axios`
 
-CSS Caveats: Modular CSS scoped to each component via JSX
-
 CSS Framework used: `bulma.io`
+
+CSS Caveats: Modular CSS (in case bulma needed overriding) scoped to each component via JSX. 
+
+
