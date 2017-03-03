@@ -10,9 +10,14 @@ class ProductList extends Component {
     this.showMore = this.showMore.bind(this);
     this.sortAlphabetically = this.sortAlphabetically.bind(this);
     this.sortByPrice = this.sortByPrice.bind(this);
+    this.restoreOriginal = this.restoreOriginal.bind(this);
     this.state = {
+      originalList: [],
       productList: [],
       displayList: [],
+      showItems: 20,
+      aToZwasClicked: false,
+      byPriceWasClicked: false,
       index: {
         start: 0,
         end: 20
@@ -27,14 +32,23 @@ class ProductList extends Component {
           <p className="subtitle">
             Sort by:
           </p>
+          <button className="restore-original button is-dark" onClick={ this.restoreOriginal }>Restore</button>
           <button className="a-to-z button is-dark" onClick={ this.sortAlphabetically }>A to Z</button>
           <button className="by-price button is-dark" onClick={ this.sortByPrice }>by Price</button>
         </div>
         <section className="product-list">
-          <ul className="columns">
+          <ul className="columns is-multiline is-mobile ">
             { this.state.displayList.map((product, index) => {
                 return (
-                  <Product key={ index } name={ product.productName } color={ product.productColor } price={ product.productPrice } badgeString={ product.productBadgeString } thumbnail={ product.thumbnails.b2 }></Product>
+
+                    <Product  
+                              key={ index }
+                              name={ product.productName } 
+                              color={ product.productColor } 
+                              price={ product.productPrice } 
+                              badgeString={ product.productBadgeString } 
+                              thumbnail={ product.thumbnails.b2 }>
+                    </Product>
                 )
               }) }
           </ul>
@@ -49,8 +63,55 @@ class ProductList extends Component {
   // performs data manipulation before triggering rerender
   // simulates potential sorting on server side, depending on application
   sortAlphabetically() {
+    let prodArray = this.state.productList;
+    this.alphaZedSorter(prodArray);
+    this.setState({
+      productList: prodArray,
+      aToZwasClicked: true,
+      byPriceWasClicked: false
+    });
     let tempArray = this.state.displayList;
-    tempArray.sort((a, b) => {
+    this.alphaZedSorter(tempArray);
+    this.setState({
+      displayList: tempArray
+    });
+  }
+
+  restoreOriginal(){
+    
+    axios.get('https://joefresh-marketing-dev.s3.amazonaws.com/developer-interview/full-list.json')
+      .then((result) => {
+        this.setState({
+          originalList: result.data.results
+        });
+      })
+      .then(()=>{
+        let tempArray = this.state.originalList.slice(0,this.state.index.end);
+        this.setState({
+          displayList: tempArray,
+          aToZwasClicked: false,
+          byPriceWasClicked: false
+        });
+      })
+  }
+
+  sortByPrice() {
+    let prodArray = this.state.productList;
+    this.priceSorter(prodArray);
+    this.setState({
+      productList: prodArray,
+      byPriceWasClicked: true,
+      aToZwasClicked: false
+    });
+    let tempArray = this.state.displayList;
+    this.priceSorter(tempArray);
+    this.setState({
+      displayList: tempArray
+    });
+  }
+
+  alphaZedSorter(arrayToSort){
+    arrayToSort.sort((a, b) => {
       let aName = a.productName.toUpperCase();
       let bName = b.productName.toUpperCase();
       if (aName < bName) {
@@ -61,19 +122,12 @@ class ProductList extends Component {
       }
       return 0;
     });
-    this.setState({
-      displayList: tempArray
-    });
   }
 
-  sortByPrice() {
-    let tempArray = this.state.displayList;
-    tempArray.sort((a, b) => {
+  priceSorter(arrayToSort){
+    arrayToSort.sort((a, b) => {
       return a.productPrice - b.productPrice;
     });
-    this.setState({
-      displayList: tempArray
-    })
   }
 
   initialFilter(arrayToFilter) {
@@ -88,9 +142,22 @@ class ProductList extends Component {
     let start = this.state.index.start;
     let end = this.state.index.end;
     let tempArray = this.state.displayList;
-    start += 20;
-    end += 20;
+    start += this.state.showItems;
+    end += this.state.showItems;
     let newArray = tempArray.concat(this.state.productList.slice(start, end));
+    if (this.state.byPriceWasClicked === true){
+      this.priceSorter(newArray);
+      this.setState({
+        displayList: newArray
+      });
+    }
+    if (this.state.aToZwasClicked === true){
+      this.alphaZedSorter(newArray);
+      this.setState({
+        displayList: newArray
+      });
+    }
+
     this.setState({
       displayList: newArray,
       index: {
@@ -116,6 +183,5 @@ class ProductList extends Component {
         this.initialFilter(this.state.productList);
       });
   }
-
 }
 export default ProductList;

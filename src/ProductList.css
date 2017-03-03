@@ -10,9 +10,3 @@
 .show-more {
   margin: 15px;
 }
-
-@media screen and (min-width: 769px) {
-  .container {
-    background: red;
-  }
-}
