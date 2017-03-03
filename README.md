@@ -37,6 +37,9 @@ Enabled via the three buttons on top.
 ## Tools and Credits 
 
 JS Framework used: `React`
+
 Library for API: `Axios`
+
 CSS Caveats: Modular CSS scoped to each component via JSX
+
 CSS Framework used: `bulma.io`
