@@ -37,7 +37,7 @@ class ProductList extends Component {
           <button className="by-price button is-dark" onClick={ this.sortByPrice }>by Price</button>
         </div>
         <section className="product-list">
-          <ul className="columns is-multiline is-mobile ">
+          <ul className="columns is-multiline is-mobile is-gapless">
             { this.state.displayList.map((product, index) => {
                 return (
 
