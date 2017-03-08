@@ -63,17 +63,22 @@ class ProductList extends Component {
   // performs data manipulation before triggering rerender
   // simulates potential sorting on server side, depending on application
   sortAlphabetically() {
-    let prodArray = this.state.productList;
-    this.alphaZedSorter(prodArray);
-    this.setState({
-      productList: prodArray,
-      aToZwasClicked: true,
-      byPriceWasClicked: false
-    });
     let tempArray = this.state.displayList;
     this.alphaZedSorter(tempArray);
     this.setState({
-      displayList: tempArray
+      displayList: tempArray,
+      aToZwasClicked: true,
+      byPriceWasClicked: false
+    });
+  }
+
+  sortByPrice() {
+    let tempArray = this.state.displayList;
+    this.priceSorter(tempArray);
+    this.setState({
+      displayList: tempArray,
+      byPriceWasClicked: true,
+      aToZwasClicked: false
     });
   }
 
@@ -95,20 +100,7 @@ class ProductList extends Component {
       })
   }
 
-  sortByPrice() {
-    let prodArray = this.state.productList;
-    this.priceSorter(prodArray);
-    this.setState({
-      productList: prodArray,
-      byPriceWasClicked: true,
-      aToZwasClicked: false
-    });
-    let tempArray = this.state.displayList;
-    this.priceSorter(tempArray);
-    this.setState({
-      displayList: tempArray
-    });
-  }
+  
 
   alphaZedSorter(arrayToSort){
     arrayToSort.sort((a, b) => {
