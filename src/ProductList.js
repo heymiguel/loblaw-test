@@ -98,9 +98,7 @@ class ProductList extends Component {
           byPriceWasClicked: false
         });
       })
-  }
-
-  
+  }  
 
   alphaZedSorter(arrayToSort){
     arrayToSort.sort((a, b) => {
